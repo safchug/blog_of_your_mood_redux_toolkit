@@ -1,5 +1,4 @@
 const getDb = require('../model');
-const bcrypt = require('bcryptjs');
 
 module.exports = {
     async saveUser(obj) {
@@ -12,5 +11,10 @@ module.exports = {
         const db = await getDb();
 
         return db.collection('users').findOne({email});
+    },
+    async getUserWithId(id) {
+        const db = await getDb();
+
+        return db.collection('users').findOne({id});
     }
 }

@@ -3,9 +3,9 @@ const jwt = require('../utils/token');
 
 const register = async (req, res, next) => {
     try {
-        let {name, password, email, birthday} = req.body;
+        let {name, login, password, email, birthday} = req.body;
 
-        let user = new User(name, email, birthday);
+        let user = new User(name, login, email, birthday);
 
         await user.hashPass(password);
         await user.save();
