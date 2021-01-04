@@ -1,10 +1,8 @@
 var bcrypt = require('bcryptjs');
 var userService = require('../services/user');
-var {uid} = require('uid/secure');
 
 class User {
     constructor(name, login, email, birthday) {
-        this.id = uid(16);
         this.name = name;
         this.login = login;
         this.email = email;

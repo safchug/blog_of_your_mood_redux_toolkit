@@ -22,5 +22,25 @@ module.exports = {
 
         const  newValues = { $push: { comments:  comment}};
         return db.collection('posts').updateOne(query, newValues);
+    },
+
+    async getPostsOnPage(page, elementsPerPage = 5) {
+
+
+        const db = await getDb();
+
+        const count = await db.collection('posts').count();
+
+        let skipIndex = count - (page * elementsPerPage);
+
+        if(skipIndex < 0) {
+            elementsPerPage += skipIndex;
+
+            console.log("skipIndex: " + skipIndex);
+            skipIndex = 0;
+        }
+
+
+        return db.collection('posts').find().skip(skipIndex).limit(elementsPerPage).toArray();
     }
 }

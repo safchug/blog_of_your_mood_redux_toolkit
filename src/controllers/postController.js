@@ -5,18 +5,16 @@ module.exports = {
         try {
             const {title, text} = req.body;
             const id = await postService.getTheLastId() + 1;
-            await postService.savePost({title, text, id, userId: req.user.id, comments: []});
+            await postService.savePost({title, text, id, login: req.user.login, comments: []});
             res.status(201).json({message: 'The post has been successfylly added'});
         } catch (err) {
             next(err);
         }
     },
 
-    async addCommetn(req, res, next) {
+    async addComment(req, res, next) {
         try {
             const {id} = req.params;
-
-            console.log(id);
 
             const {text, login} = req.body;
 
@@ -29,5 +27,18 @@ module.exports = {
         } catch (err) {
             next(err);
         }
+    },
+
+    async getSomePosts(req, res, next) {
+        try {
+            const {page} = req.params;
+
+            const result = await postService.getPostsOnPage(page);
+
+            res.json(result.reverse());
+        } catch (err) {
+            next(err);
+        }
+
     }
 }
