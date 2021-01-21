@@ -17,7 +17,6 @@ const register = async (req, res, next) => {
 
 const login = async (req, res, next) => {
     try {
-        console.log('Login start');
         const { email, password} = req.body;
 
         const user = await User.getUserIfExist(email);
@@ -25,7 +24,8 @@ const login = async (req, res, next) => {
         const isVerified = await User.verifyPass(password, user.hash);
         if(!isVerified) throw new Error('The pasword doesn`t match');
         const token = jwt.createAccessToken(user.id);
-        const userInfo = {emial: user.email, name: user.name, id: user.id, birthday: user.birthday};
+        const userInfo = {emial: user.email, name: user.name, birthday: user.birthday,
+            login: user.login, id: user.id};
 
         res.json({token, userInfo});
     } catch (err) {
@@ -33,4 +33,19 @@ const login = async (req, res, next) => {
     }
 }
 
-module.exports = { register, login }
+function auth(req, res, next) {
+    try {
+        if(req.user) {
+            const user = req.user;
+
+            const userInfo = {emial: user.email, name: user.name,
+                birthday: user.birthday, login: user.login, id: user.id};
+
+            res.json(userInfo);
+        }
+    } catch (err) {
+        next(err);
+    }
+}
+
+module.exports = { register, login, auth }

@@ -42,5 +42,20 @@ module.exports = {
 
 
         return db.collection('posts').find().skip(skipIndex).limit(elementsPerPage).toArray();
+    },
+
+    async deletePostWithId(id) {
+        const db = await getDb();
+
+        return db.collection('posts').deleteOne({id: Number(id)});
+    },
+
+    async editPostWithId(id, post) {
+        const db = await getDb();
+
+        const query = {id: Number(id)};
+        const newValue = {$set: {...post}};
+
+        return db.collection('posts').updateOne(query, newValue);
     }
 }

@@ -1,8 +1,10 @@
+var {uid} = require('uid');
 var bcrypt = require('bcryptjs');
 var userService = require('../services/user');
 
 class User {
     constructor(name, login, email, birthday) {
+        this.id = uid(16);
         this.name = name;
         this.login = login;
         this.email = email;
@@ -26,14 +28,21 @@ class User {
 
     async save() {
         //validation
-        let user = await User.getUserIfExist(this.email);
-        if(user) throw new Error('This email is already taken');
+        const userWithEmial = await User.getUserIfExist(this.email);
+        if(userWithEmial) throw new Error('This email is already taken');
+
+        const userWithLogin = await User.getUserIfLoginExist(this.login);
+        if(userWithLogin) throw new Error('This login is already taken');
 
         return userService.saveUser(this);
     }
 
     static getUserIfExist(email) {
         return userService.getUserWithEmail(email);
+    }
+
+    static getUserIfLoginExist(login) {
+        return userService.getUserWithLogin(login);
     }
 
     static verifyPass(pass, hash) {
